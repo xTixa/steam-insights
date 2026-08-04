@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/providers/steam_api_providers.dart';
+import '../../../library/presentation/providers/library_providers.dart';
 import '../../domain/entities/game_details.dart';
 import '../../domain/repositories/game_detail_repository.dart';
 import '../../domain/usecases/get_game_details.dart';
@@ -16,7 +17,7 @@ GameDetailRepository gameDetailRepository(Ref ref) {
     ref.watch(steamStoreApiClientProvider),
     ref.watch(steamWebApiClientProvider),
   );
-  return GameDetailRepositoryImpl(remote);
+  return GameDetailRepositoryImpl(remote, ref.watch(libraryRepositoryProvider));
 }
 
 @riverpod

@@ -12,10 +12,17 @@ class OwnedGameDto {
   });
 
   factory OwnedGameDto.fromJson(Map<String, dynamic> json) {
+    final appId = json['appid'] as int;
+    final iconHash = json['img_icon_url'] as String? ?? '';
     return OwnedGameDto(
-      appId: json['appid'] as int,
+      appId: appId,
       name: json['name'] as String? ?? '',
-      iconUrl: json['img_icon_url'] as String? ?? '',
+      // GetOwnedGames only returns the icon's hash, not a full URL — build
+      // the actual CDN URL here so downstream widgets can pass it straight
+      // to Image.network without knowing about this quirk.
+      iconUrl: iconHash.isEmpty
+          ? ''
+          : 'https://media.steampowered.com/steamcommunity/public/images/apps/$appId/$iconHash.jpg',
       playtimeForeverMinutes: json['playtime_forever'] as int? ?? 0,
       playtimeLast2WeeksMinutes: json['playtime_2weeks'] as int? ?? 0,
     );

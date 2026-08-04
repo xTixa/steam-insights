@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/providers/active_profile_provider.dart';
 import '../../../../core/providers/theme_mode_provider.dart';
 import '../../../../core/router/app_routes.dart';
+import '../../../library/presentation/providers/library_providers.dart'
+    show filteredLibraryProvider;
 import '../providers/settings_providers.dart';
 
 /// Theme toggle, clear cache, refresh library, language selector (stub),
@@ -30,14 +32,23 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.cleaning_services_outlined),
             title: const Text('Clear cache'),
-            onTap: () => ref.read(clearCacheProvider).call(),
+            onTap: () async {
+              await ref.read(clearCacheProvider).call();
+              // Cached data invalidated locally, so every screen reading
+              // through these providers re-fetches instead of showing
+              // stale library-derived state.
+              ref.invalidate(filteredLibraryProvider);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.refresh),
             title: const Text('Refresh library'),
             onTap: steamId64 == null
                 ? null
-                : () => ref.read(refreshLibraryProvider).call(steamId64),
+                : () async {
+                    await ref.read(refreshLibraryProvider).call(steamId64);
+                    ref.invalidate(filteredLibraryProvider);
+                  },
           ),
           const ListTile(
             leading: Icon(Icons.language),

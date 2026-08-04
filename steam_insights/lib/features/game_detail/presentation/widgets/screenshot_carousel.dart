@@ -21,6 +21,11 @@ class ScreenshotCarousel extends StatelessWidget {
             screenshotUrls[index],
             width: 240,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              width: 240,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              child: const Icon(Icons.broken_image_outlined),
+            ),
           ),
         ),
       ),

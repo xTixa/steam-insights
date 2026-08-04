@@ -16,6 +16,9 @@ class AppRoutes {
   static const String gameDetailPattern = '/library/game/:appId';
   static String gameDetail(int appId) => '/library/game/$appId';
 
-  static const String comparison = '/comparison';
-  static const String search = '/search';
+  // Nested under their tab's root route (rather than top-level siblings) so
+  // they push onto that branch's Navigator and stay inside AppShell's
+  // Scaffold — keeping the bottom NavigationBar visible. See app_router.dart.
+  static const String comparison = '/dashboard/comparison';
+  static const String search = '/library/search';
 }

@@ -14,6 +14,17 @@ abstract interface class LibraryRepository {
 
   Future<void> toggleFavoriteGame(String steamId64, int appId);
 
+  /// Persists achievement counts fetched on-demand (e.g. when opening a
+  /// game's detail page — see features/game_detail) so the Library list's
+  /// "% completed" reflects them without needing a full library refresh,
+  /// which would require one Steam API call per owned game.
+  Future<void> updateAchievements(
+    String steamId64,
+    int appId,
+    int unlocked,
+    int total,
+  );
+
   Future<List<LibraryGame>> searchLibrary(String steamId64, String query);
 
   Future<List<LibrarySnapshot>> getLibrarySnapshots(String steamId64);

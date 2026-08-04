@@ -18,11 +18,23 @@ class AppDetailsDto {
   });
 
   factory AppDetailsDto.fromJson(int appId, Map<String, dynamic> json) {
+    final priceOverview = json['price_overview'] as Map<String, dynamic>?;
+    final releaseDateJson = json['release_date'] as Map<String, dynamic>?;
+    final releaseDateStr = releaseDateJson?['date'] as String?;
+
     return AppDetailsDto(
       appId: appId,
       name: json['name'] as String? ?? '',
       headerImage: json['header_image'] as String? ?? '',
       description: json['short_description'] as String? ?? '',
+      // Steam's release_date.date is a locale-formatted string (e.g.
+      // "21 Mar, 2013"), not ISO 8601 — tryParse silently yields null for
+      // those; a proper fix needs a dedicated date parser, out of scope here.
+      releaseDate: releaseDateStr != null
+          ? DateTime.tryParse(releaseDateStr)
+          : null,
+      priceCents: priceOverview?['final'] as int?,
+      currency: priceOverview?['currency'] as String?,
       developers:
           (json['developers'] as List<dynamic>?)?.cast<String>() ?? const [],
       publishers:
@@ -58,7 +70,11 @@ class AppDetailsDto {
   final List<String> categories;
   final List<String> screenshotUrls;
 
-  GameDetails toEntity({int playtimeMinutes = 0}) {
+  GameDetails toEntity({
+    int playtimeMinutes = 0,
+    List<GameAchievement> achievements = const [],
+    AchievementsStatus achievementsStatus = AchievementsStatus.loaded,
+  }) {
     return GameDetails(
       appId: appId,
       name: name,
@@ -72,6 +88,8 @@ class AppDetailsDto {
       currency: currency,
       genres: genres,
       categories: categories,
+      achievements: achievements,
+      achievementsStatus: achievementsStatus,
       playtimeMinutes: playtimeMinutes,
       screenshotUrls: screenshotUrls,
     );

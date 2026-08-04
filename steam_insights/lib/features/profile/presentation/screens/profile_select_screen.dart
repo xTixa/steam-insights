@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,8 @@ import '../../../../core/router/app_routes.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
+import '../../../dashboard/presentation/providers/dashboard_providers.dart';
+import '../../../library/presentation/providers/library_providers.dart';
 import '../providers/profile_providers.dart';
 import '../widgets/profile_list_tile.dart';
 
@@ -41,6 +45,11 @@ class ProfileSelectScreen extends ConsumerWidget {
                   ref
                       .read(activeProfileControllerProvider.notifier)
                       .setActiveProfile(profile.steamId64);
+                  // Fire-and-forget: populates the local cache so the
+                  // dashboard/library aren't empty on first visit (RF09),
+                  // then invalidates the read-side providers so screens
+                  // pick up the freshly-cached data instead of stale state.
+                  unawaited(_refreshAndInvalidate(ref, profile.steamId64));
                   context.go(AppRoutes.dashboard);
                 },
                 onToggleFavorite: () => ref
@@ -63,4 +72,15 @@ class ProfileSelectScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> _refreshAndInvalidate(WidgetRef ref, String steamId64) async {
+  try {
+    await ref.read(refreshLibraryProvider).call(steamId64);
+  } catch (_) {
+    // Best-effort background refresh; the dashboard/library screens will
+    // just keep showing whatever was cached before.
+  }
+  ref.invalidate(filteredLibraryProvider);
+  ref.invalidate(accountSummaryProvider);
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/providers/active_profile_provider.dart';
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
@@ -25,7 +27,16 @@ class DashboardScreen extends ConsumerWidget {
     final summary = ref.watch(accountSummaryProvider(steamId64));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.compare_arrows),
+            tooltip: 'Compare profiles',
+            onPressed: () => context.push(AppRoutes.comparison),
+          ),
+        ],
+      ),
       body: summary.when(
         loading: () => const LoadingIndicator(),
         error: (error, _) => ErrorView(message: '$error'),

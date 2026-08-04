@@ -1,5 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,11 +21,15 @@ part 'app_router.g.dart';
 
 @riverpod
 GoRouter appRouter(Ref ref) {
+  // Watching (not reading) rebuilds the whole GoRouter — and re-runs
+  // `redirect` — whenever the active profile changes, so navigating right
+  // after setActiveProfile() doesn't bounce back to profile-select.
+  final activeSteamId64 = ref.watch(activeProfileControllerProvider);
+
   return GoRouter(
     initialLocation: AppRoutes.splash,
     redirect: (context, state) {
-      final hasActiveProfile =
-          ref.read(activeProfileControllerProvider) != null;
+      final hasActiveProfile = activeSteamId64 != null;
       final onProfileSelect = state.matchedLocation.startsWith(
         AppRoutes.profileSelect,
       );
@@ -54,6 +58,13 @@ GoRouter appRouter(Ref ref) {
           ),
         ],
       ),
+      // Every route below is nested inside a tab branch (rather than pushed
+      // as a top-level sibling route) specifically so the bottom
+      // NavigationBar in AppShell stays visible: StatefulShellRoute keeps
+      // one Navigator per branch, and any GoRoute nested under a branch's
+      // root route pushes onto that same branch Navigator, inside the
+      // shell's `body`, instead of covering the whole Scaffold including
+      // the bottom bar.
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
@@ -63,6 +74,12 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.dashboard,
                 builder: (context, state) => const DashboardScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'comparison',
+                    builder: (context, state) => const ComparisonScreen(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -71,6 +88,21 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.library,
                 builder: (context, state) => const LibraryScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'game/:appId',
+                    builder: (context, state) {
+                      final appId = int.parse(
+                        state.pathParameters['appId']!,
+                      );
+                      return GameDetailScreen(appId: appId);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'search',
+                    builder: (context, state) => const SearchScreen(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -99,21 +131,6 @@ GoRouter appRouter(Ref ref) {
             ],
           ),
         ],
-      ),
-      GoRoute(
-        path: AppRoutes.gameDetailPattern,
-        builder: (context, state) {
-          final appId = int.parse(state.pathParameters['appId']!);
-          return GameDetailScreen(appId: appId);
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.comparison,
-        builder: (context, state) => const ComparisonScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.search,
-        builder: (context, state) => const SearchScreen(),
       ),
     ],
   );

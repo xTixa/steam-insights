@@ -31,7 +31,11 @@
       "Bash(tasklist //FI \"IMAGENAME eq steam_insights.exe\")",
       "Bash(tasklist //FI \"IMAGENAME eq dart.exe\")",
       "Bash(tasklist //FI \"IMAGENAME eq flutter_tools.snapshot\")",
-      "Bash(taskkill //IM dart.exe //F)"
+      "Bash(taskkill //IM dart.exe //F)",
+      "Bash(grep -v \"deprecated_member_use\\\\|^$\")",
+      "Bash(node scripts/validate_palette.js \"66C0F4,A4D007,E04E4E,F5A623,9B59B6,1ABC9C\" --mode light)",
+      "Bash(node scripts/validate_palette.js \"2a78d6,eb6834,1baf7a,eda100,e87ba4,008300,4a3aa7,e34948\" --mode light)",
+      "Bash(node scripts/validate_palette.js \"3987e5,d95926,199e70,c98500,d55181,008300,9085e9,e66767\" --mode dark --surface \"1a1a19\")"
     ]
   }
 }

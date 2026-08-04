@@ -1,3 +1,15 @@
+/// Why [GameDetails.achievements] may be empty — the UI shows a different
+/// message for each, rather than silently rendering nothing.
+enum AchievementsStatus {
+  /// Fetched successfully; [GameDetails.achievements] holds the result
+  /// (which may itself legitimately be empty if the game has none).
+  loaded,
+
+  /// Steam rejected the request — typically a private profile/game details
+  /// setting (HTTP 403), or a transient network failure.
+  unavailable,
+}
+
 /// Full details for a single game's dedicated page.
 class GameDetails {
   const GameDetails({
@@ -14,6 +26,7 @@ class GameDetails {
     this.genres = const [],
     this.categories = const [],
     this.achievements = const [],
+    this.achievementsStatus = AchievementsStatus.loaded,
     this.playtimeMinutes = 0,
     this.screenshotUrls = const [],
   });
@@ -31,6 +44,7 @@ class GameDetails {
   final List<String> genres;
   final List<String> categories;
   final List<GameAchievement> achievements;
+  final AchievementsStatus achievementsStatus;
   final int playtimeMinutes;
   final List<String> screenshotUrls;
 }

@@ -91,7 +91,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                     itemBuilder: (context, index) {
                       final result = results[index];
                       return ListTile(
-                        leading: Image.network(result.iconUrl),
+                        leading: SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: result.iconUrl.isNotEmpty
+                              ? Image.network(
+                                  result.iconUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.videogame_asset),
+                                )
+                              : const Icon(Icons.videogame_asset),
+                        ),
                         title: Text(result.name),
                       );
                     },

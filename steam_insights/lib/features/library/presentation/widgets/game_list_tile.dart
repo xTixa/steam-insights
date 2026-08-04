@@ -20,9 +20,21 @@ class GameListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: game.iconUrl.isNotEmpty
-          ? Image.network(game.iconUrl, width: 40, height: 40)
-          : const Icon(Icons.videogame_asset),
+      leading: SizedBox(
+        width: 40,
+        height: 40,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: game.iconUrl.isNotEmpty
+              ? Image.network(
+                  game.iconUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.videogame_asset),
+                )
+              : const Icon(Icons.videogame_asset),
+        ),
+      ),
       title: Text(game.name),
       subtitle: Text(
         '${playtimeMinutesToHoursLabel(game.playtimeForeverMinutes)} • '

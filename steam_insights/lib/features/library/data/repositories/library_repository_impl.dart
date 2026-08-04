@@ -47,6 +47,16 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
+  Future<void> updateAchievements(
+    String steamId64,
+    int appId,
+    int unlocked,
+    int total,
+  ) {
+    return _local.updateAchievements(steamId64, appId, unlocked, total);
+  }
+
+  @override
   Future<List<LibraryGame>> searchLibrary(String steamId64, String query) async {
     final games = await getLibrary(steamId64);
     final lowerQuery = query.toLowerCase();
