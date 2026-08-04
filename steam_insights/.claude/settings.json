@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub *)",
+      "Bash(dart run *)",
+      "Bash(flutter analyze *)",
+      "Bash(grep -rl \"^import 'package:riverpod_annotation/riverpod_annotation.dart';$\" lib --include=\"*.dart\")",
+      "Bash(cd \"e:/IPV/Projetos/steam-insights/steam_insights\" && find / -path \"*/riverpod_annotation-2*/lib/riverpod_annotation.dart\" 2>/dev/null | head -3)",
+      "Read(//e//**)",
+      "Bash(flutter test *)",
+      "Bash(flutter devices *)",
+      "Bash(flutter emulators *)",
+      "Bash(flutter config *)",
+      "Bash(flutter doctor *)",
+      "Bash(flutter run *)",
+      "Bash(flutter create *)",
+      "Bash(winget list *)",
+      "Bash(winget show *)",
+      "Bash(winget install *)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Microsoft Visual Studio/2022/BuildTools/**)",
+      "Read(//c/Program Files/Microsoft Visual Studio/**)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/**)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Windows Kits/10/**)",
+      "Bash(find \"C:/Program Files \\(x86\\)/Microsoft Visual Studio/Installer\" -iname \"vs_installer.exe\" 2>&1)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Microsoft Visual Studio/Installer/**)",
+      "Bash('/c/Program Files \\(x86\\)/Microsoft Visual Studio/Installer/vs_installer.exe' modify --installPath 'C:\\\\Program Files \\(x86\\)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools' --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.20348 --add Microsoft.VisualStudio.Component.VC.CMake.Project --quiet --norestart --wait)",
+      "Bash(find \"C:/Users/patri/AppData/Local/Temp\" -iname \"dd_vs_installer*.log\" -newer \"C:/Program Files \\(x86\\)/Microsoft Visual Studio/Installer/vs_installer.exe\" 2>/dev/null | head -5 *)",
+      "Read(//c/Users/patri/AppData/Local/Temp/**)",
+      "Bash(tail -50 \"C:/Users/patri/AppData/Local/Temp/dd_installer_20260804144743.log\" 2>&1)",
+      "Read(//c/Program Files \\\\\\(x86\\\\\\)/Windows Kits/10/Include/**)",
+      "Bash(tasklist //FI \"IMAGENAME eq steam_insights.exe\")",
+      "Bash(tasklist //FI \"IMAGENAME eq dart.exe\")",
+      "Bash(tasklist //FI \"IMAGENAME eq flutter_tools.snapshot\")",
+      "Bash(taskkill //IM dart.exe //F)"
+    ]
+  }
+}
