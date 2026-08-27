@@ -49,7 +49,17 @@ class ProfileSelectScreen extends ConsumerWidget {
                   // dashboard/library aren't empty on first visit (RF09),
                   // then invalidates the read-side providers so screens
                   // pick up the freshly-cached data instead of stale state.
-                  unawaited(_refreshAndInvalidate(ref, profile.steamId64));
+                  // Uses the ProviderContainer (not the WidgetRef) because
+                  // this screen is popped by context.go() right after the
+                  // call, and the WidgetRef becomes unusable once the
+                  // widget is disposed — the container outlives it.
+                  final container = ProviderScope.containerOf(
+                    context,
+                    listen: false,
+                  );
+                  unawaited(
+                    _refreshAndInvalidate(container, profile.steamId64),
+                  );
                   context.go(AppRoutes.dashboard);
                 },
                 onToggleFavorite: () => ref
@@ -74,13 +84,16 @@ class ProfileSelectScreen extends ConsumerWidget {
   }
 }
 
-Future<void> _refreshAndInvalidate(WidgetRef ref, String steamId64) async {
+Future<void> _refreshAndInvalidate(
+  ProviderContainer container,
+  String steamId64,
+) async {
   try {
-    await ref.read(refreshLibraryProvider).call(steamId64);
+    await container.read(refreshLibraryProvider).call(steamId64);
   } catch (_) {
     // Best-effort background refresh; the dashboard/library screens will
     // just keep showing whatever was cached before.
   }
-  ref.invalidate(filteredLibraryProvider);
-  ref.invalidate(accountSummaryProvider);
+  container.invalidate(filteredLibraryProvider);
+  container.invalidate(accountSummaryProvider);
 }
